@@ -1,0 +1,37 @@
+name: Deploy app-ads.txt to GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Verify app-ads.txt exists
+        run: |
+          if [ ! -f public/app-ads.txt ]; then
+            echo "❌ Error: public/app-ads.txt not found"
+            exit 1
+          fi
+          echo "✔ public/app-ads.txt exists"
+          
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: 'public'  # Only upload the public folder
+          
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2
